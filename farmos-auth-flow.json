@@ -1,8 +1,15 @@
 [
     {
-        "id": "9ba5ffbcf884049e",
+        "id": "58ff452f.d398fc",
+        "type": "tab",
+        "label": "Test farmOS Flow",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9793e818.72b8b8",
         "type": "ui_text",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "group": "b5079d0.289126",
         "order": 4,
         "width": 0,
@@ -12,14 +19,14 @@
         "format": "{{msg.payload.meta.farm.name}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1150,
-        "y": 500,
+        "x": 870,
+        "y": 360,
         "wires": []
     },
     {
-        "id": "e92fa234afee1663",
+        "id": "88b453e3.fc91b",
         "type": "http request",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
         "method": "use",
         "ret": "obj",
@@ -30,20 +37,21 @@
         "proxy": "",
         "authType": "",
         "senderr": false,
-        "x": 790,
-        "y": 540,
+        "credentials": {},
+        "x": 590,
+        "y": 440,
         "wires": [
             [
-                "9ba5ffbcf884049e",
-                "16f09da54f468c3b",
-                "82aa4e7e3e6b1bd8"
+                "9793e818.72b8b8",
+                "48e94484.4d3f6c",
+                "c3e15cab7508cc7b"
             ]
         ]
     },
     {
-        "id": "16f09da54f468c3b",
+        "id": "48e94484.4d3f6c",
         "type": "ui_text",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "group": "b5079d0.289126",
         "order": 5,
         "width": 0,
@@ -53,14 +61,65 @@
         "format": "{{msg.payload.jsonapi.version}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1150,
-        "y": 560,
+        "x": 870,
+        "y": 420,
         "wires": []
     },
     {
-        "id": "383da6492fedd609",
+        "id": "d9b95b2c.26ebe",
+        "type": "ui_dropdown",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "label": "Animals",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "b5079d0.289126",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 1040,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "57797f06.f8162",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Filter Animals",
+        "func": "var newmsg = msg;\nnewmsg.options = [];\nvar temp1, temp2;\nfor (var i = 0; i < msg.payload.data.length; i++) {\n    temp1 = msg.payload.data[i].attributes.name;\n    temp2 = msg.payload.data[i].attributes.sex;\n    newmsg.options[i] = {};\n    newmsg.options[i] = temp1 + temp2;\n\n}\nreturn newmsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 520,
+        "wires": [
+            [
+                "d9b95b2c.26ebe",
+                "45aa4fb67e866872"
+            ]
+        ]
+    },
+    {
+        "id": "df4262fa.d3bc2",
         "type": "ui_button",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
         "group": "b5079d0.289126",
         "order": 3,
@@ -71,62 +130,63 @@
         "tooltip": "",
         "color": "",
         "bgcolor": "",
-        "className": "",
         "icon": "",
         "payload": "",
         "payloadType": "str",
         "topic": "",
-        "topicType": "str",
-        "x": 120,
-        "y": 540,
+        "x": 100,
+        "y": 340,
         "wires": [
             [
-                "919255d0c39140a3"
+                "51cd3f66.50444"
             ]
         ]
     },
     {
-        "id": "559b0a8b62cc88e6",
-        "type": "function",
-        "z": "b76a725cf09595b0",
-        "name": "Save OAuth Token",
-        "func": "if (msg.payload.access_token) {\n    var token = msg.payload.access_token;\n    flow.set('token', token);\n    msg.payload = \"Access Granted\";\n} else {\n    msg.payload = \"Authorization error.\";\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 850,
-        "y": 220,
+        "id": "82f91b36.552c78",
+        "type": "oauth2",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "container": "payload",
+        "access_token_url": "http://localhost/oauth2/token",
+        "grant_type": "set_by_credentials",
+        "username": "paul",
+        "password": "test",
+        "client_id": "farmos_api_client",
+        "client_secret": "client_secret",
+        "scope": "farmos_restws_access",
+        "x": 570,
+        "y": 120,
         "wires": [
             [
-                "eb045c657c1ad956"
+                "bca0e987464a459f"
             ]
         ]
     },
     {
-        "id": "919255d0c39140a3",
+        "id": "51cd3f66.50444",
         "type": "function",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "Prepare HTTP request",
-        "func": "\n\nvar token = flow.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
+        "func": "var token = flow.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 320,
-        "y": 540,
+        "x": 180,
+        "y": 520,
         "wires": [
             [
-                "6eedb4503a181444"
+                "6c1b445f.c9f364",
+                "9948507d8ad1d243"
             ]
         ]
     },
     {
-        "id": "eb045c657c1ad956",
+        "id": "f026dcfb.02ce58",
         "type": "ui_text",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "group": "16448850.68666",
         "order": 2,
         "width": 0,
@@ -135,15 +195,14 @@
         "label": "Auth Token",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "className": "",
-        "x": 1040,
-        "y": 220,
+        "x": 940,
+        "y": 120,
         "wires": []
     },
     {
-        "id": "6a4430ab068951a0",
+        "id": "9c6d219d.1bf7c",
         "type": "ui_form",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
         "label": "OAuth",
         "group": "16448850.68666",
@@ -185,18 +244,19 @@
         "topicType": "str",
         "splitLayout": false,
         "className": "",
-        "x": 210,
-        "y": 220,
+        "x": 110,
+        "y": 120,
         "wires": [
             [
-                "2a0fcfef819ff5bd"
+                "5da51681.9cd4a8",
+                "9d60efedb175b10c"
             ]
         ]
     },
     {
-        "id": "2a0fcfef819ff5bd",
+        "id": "5da51681.9cd4a8",
         "type": "function",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "Creat OAuth2Request",
         "func": "msg.oauth2Request = { \n        \"access_token_url\": msg.payload.url.concat(\"/oauth/token\"), \n        \"credentials\": {\n            \"grant_type\": \"password\",\n            \"username\": msg.payload.username,\n            \"password\": msg.payload.password,\n            \"client_id\": \"farm\",\n            \"client_secret\": \"client_secret\",\n            \"scope\": \"farm_manager\"\n        }\n    };\nreturn msg;",
         "outputs": 1,
@@ -204,62 +264,57 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 460,
-        "y": 220,
+        "x": 360,
+        "y": 120,
         "wires": [
             [
-                "c2b3f18e1940ce11"
+                "82f91b36.552c78"
             ]
         ]
     },
     {
-        "id": "6eedb4503a181444",
+        "id": "6c1b445f.c9f364",
         "type": "function",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
-        "func": "msg.url = flow.get('url').concat('api');\nmsg.method = \"GET\";\nreturn msg;",
+        "func": "msg.url = flow.get('url').concat('/api');\nmsg.method = \"GET\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 530,
-        "y": 540,
+        "x": 380,
+        "y": 440,
         "wires": [
             [
-                "e92fa234afee1663",
-                "313fd31e9b986124"
+                "88b453e3.fc91b",
+                "3718274b2e9fcc9b"
             ]
         ]
     },
     {
-        "id": "c2b3f18e1940ce11",
-        "type": "oauth2",
-        "z": "b76a725cf09595b0",
-        "name": "",
-        "container": "payload",
-        "access_token_url": "http://localhost/oauth2/token",
-        "grant_type": "set_by_credentials",
-        "username": "paul",
-        "password": "test",
-        "client_id": "farmos_api_client",
-        "client_secret": "client_secret",
-        "scope": "farmos_restws_access",
-        "rejectUnauthorized": true,
-        "headers": {},
-        "x": 670,
-        "y": 220,
+        "id": "bca0e987464a459f",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Save OAuth Token",
+        "func": "if (msg.payload.access_token) {\n    var token = msg.payload.access_token;\n    flow.set('token', token);\n    msg.payload = \"Access Granted\";\n} else {\n    msg.payload = \"Authorization error.\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 120,
         "wires": [
             [
-                "559b0a8b62cc88e6",
-                "9dc0cd86662a96fc"
+                "f026dcfb.02ce58"
             ]
         ]
     },
     {
-        "id": "313fd31e9b986124",
+        "id": "3718274b2e9fcc9b",
         "type": "debug",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
         "active": true,
         "tosidebar": true,
@@ -267,16 +322,33 @@
         "tostatus": true,
         "complete": "url",
         "targetType": "msg",
-        "statusVal": "payload",
+        "statusVal": "url",
         "statusType": "auto",
-        "x": 740,
-        "y": 440,
+        "x": 500,
+        "y": 280,
         "wires": []
     },
     {
-        "id": "82aa4e7e3e6b1bd8",
+        "id": "9d60efedb175b10c",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "func": "var url = msg.payload.url\nflow.set('url', url);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c3e15cab7508cc7b",
         "type": "debug",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
         "active": true,
         "tosidebar": true,
@@ -286,25 +358,70 @@
         "targetType": "msg",
         "statusVal": "payload",
         "statusType": "auto",
-        "x": 960,
-        "y": 440,
+        "x": 800,
+        "y": 280,
         "wires": []
     },
     {
-        "id": "9dc0cd86662a96fc",
+        "id": "9948507d8ad1d243",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "func": "msg.url = flow.get('url').concat('/api/asset/animal');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 520,
+        "wires": [
+            [
+                "986be71ecf88edbb"
+            ]
+        ]
+    },
+    {
+        "id": "986be71ecf88edbb",
+        "type": "http request",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {
+            "user": "",
+            "password": ""
+        },
+        "x": 570,
+        "y": 520,
+        "wires": [
+            [
+                "57797f06.f8162"
+            ]
+        ]
+    },
+    {
+        "id": "45aa4fb67e866872",
         "type": "debug",
-        "z": "b76a725cf09595b0",
+        "z": "58ff452f.d398fc",
         "name": "",
         "active": true,
         "tosidebar": true,
         "console": true,
         "tostatus": true,
-        "complete": "payload",
+        "complete": "options",
         "targetType": "msg",
         "statusVal": "payload",
         "statusType": "auto",
-        "x": 860,
-        "y": 120,
+        "x": 1100,
+        "y": 420,
         "wires": []
     },
     {
