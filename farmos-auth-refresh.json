@@ -1,0 +1,514 @@
+[
+    {
+        "id": "58ff452f.d398fc",
+        "type": "tab",
+        "label": "Test farmOS Flow",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9793e818.72b8b8",
+        "type": "ui_text",
+        "z": "58ff452f.d398fc",
+        "group": "b5079d0.289126",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Server Name",
+        "format": "{{msg.payload.meta.farm.name}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1010,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "88b453e3.fc91b",
+        "type": "http request",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 590,
+        "y": 440,
+        "wires": [
+            [
+                "9793e818.72b8b8",
+                "48e94484.4d3f6c",
+                "c3e15cab7508cc7b"
+            ]
+        ]
+    },
+    {
+        "id": "48e94484.4d3f6c",
+        "type": "ui_text",
+        "z": "58ff452f.d398fc",
+        "group": "b5079d0.289126",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "API Version",
+        "format": "{{msg.payload.jsonapi.version}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1010,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "d9b95b2c.26ebe",
+        "type": "ui_dropdown",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "label": "Animals",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "b5079d0.289126",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 1040,
+        "y": 520,
+        "wires": [
+            [
+                "a8833db3aaa93cbd"
+            ]
+        ]
+    },
+    {
+        "id": "57797f06.f8162",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Filter Animals",
+        "func": "msg.options = [];\nvar name, id;\nfor (var i = 0; i < msg.payload.data.length; i++) {\n    name = msg.payload.data[i].attributes.name;\n    id = msg.payload.data[i].attributes.id_tag[0].id;\n    msg.options[i] = {};\n    msg.options[i][name] = id;\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 520,
+        "wires": [
+            [
+                "d9b95b2c.26ebe",
+                "49f22571f1a7cf2a"
+            ]
+        ]
+    },
+    {
+        "id": "df4262fa.d3bc2",
+        "type": "ui_button",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "group": "b5079d0.289126",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Refresh!!",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 100,
+        "y": 440,
+        "wires": [
+            [
+                "51cd3f66.50444"
+            ]
+        ]
+    },
+    {
+        "id": "82f91b36.552c78",
+        "type": "oauth2",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "container": "payload",
+        "access_token_url": "http://localhost/oauth2/token",
+        "grant_type": "set_by_credentials",
+        "username": "paul",
+        "password": "test",
+        "client_id": "farmos_api_client",
+        "client_secret": "client_secret",
+        "scope": "farmos_restws_access",
+        "rejectUnauthorized": true,
+        "headers": {},
+        "x": 570,
+        "y": 120,
+        "wires": [
+            [
+                "bca0e987464a459f",
+                "6675e558320b8091"
+            ]
+        ]
+    },
+    {
+        "id": "51cd3f66.50444",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Prepare HTTP request",
+        "func": "var token = flow.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 520,
+        "wires": [
+            [
+                "6c1b445f.c9f364",
+                "9948507d8ad1d243"
+            ]
+        ]
+    },
+    {
+        "id": "f026dcfb.02ce58",
+        "type": "ui_text",
+        "z": "58ff452f.d398fc",
+        "group": "16448850.68666",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Auth Token",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1010,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "9c6d219d.1bf7c",
+        "type": "ui_form",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "label": "OAuth",
+        "group": "16448850.68666",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "farmOS URL",
+                "value": "url",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Username",
+                "value": "username",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Password",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "url": "",
+            "username": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "x": 110,
+        "y": 120,
+        "wires": [
+            [
+                "5da51681.9cd4a8"
+            ]
+        ]
+    },
+    {
+        "id": "5da51681.9cd4a8",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Creat OAuth2Request",
+        "func": "var url = msg.payload.url\nflow.set('url', url);\n\nmsg.oauth2Request = { \n        \"access_token_url\": msg.payload.url.concat(\"/oauth/token\"), \n        \"credentials\": {\n            \"grant_type\": \"password\",\n            \"username\": msg.payload.username,\n            \"password\": msg.payload.password,\n            \"client_id\": \"farm\",\n            \"client_secret\": \"client_secret\",\n            \"scope\": \"farm_manager\"\n        }\n    };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "82f91b36.552c78"
+            ]
+        ]
+    },
+    {
+        "id": "6c1b445f.c9f364",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "func": "msg.url = flow.get('url').concat('/api');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 440,
+        "wires": [
+            [
+                "88b453e3.fc91b",
+                "3718274b2e9fcc9b"
+            ]
+        ]
+    },
+    {
+        "id": "bca0e987464a459f",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Save OAuth Token",
+        "func": "if (msg.payload.access_token) {\n    var token = msg.payload.access_token;\n    var refresh = msg.payload.refresh_token;\n    flow.set('token', token);\n    flow.set('refresh', refresh);\n    msg.payload = \"Access Granted\";\n} else {\n    msg.payload = \"Authorization error.\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 120,
+        "wires": [
+            [
+                "f026dcfb.02ce58"
+            ]
+        ]
+    },
+    {
+        "id": "3718274b2e9fcc9b",
+        "type": "debug",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "url",
+        "targetType": "msg",
+        "statusVal": "url",
+        "statusType": "auto",
+        "x": 360,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "c3e15cab7508cc7b",
+        "type": "debug",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9948507d8ad1d243",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "func": "msg.url = flow.get('url').concat('/api/asset/animal');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 520,
+        "wires": [
+            [
+                "986be71ecf88edbb"
+            ]
+        ]
+    },
+    {
+        "id": "986be71ecf88edbb",
+        "type": "http request",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 590,
+        "y": 520,
+        "wires": [
+            [
+                "57797f06.f8162"
+            ]
+        ]
+    },
+    {
+        "id": "a8833db3aaa93cbd",
+        "type": "ui_text",
+        "z": "58ff452f.d398fc",
+        "group": "b5079d0.289126",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Tag ID",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1250,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "49f22571f1a7cf2a",
+        "type": "debug",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "options",
+        "targetType": "msg",
+        "statusVal": "options",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "c9e082dc448a834b",
+        "type": "function",
+        "z": "58ff452f.d398fc",
+        "name": "Refresh Token",
+        "func": "var refresh = flow.get('refresh');\n\nmsg.oauth2Request = {\n    \"access_token_url\": flow.get('url').concat('/oauth/token'), \n    \"credentials\": {\n        \"grant_type\": \"refresh_token\",\n        \"client_id\": \"farm\",\n        \"client_secret\": \"client_secret\",\n        \"refresh_token\": refresh,\n        \"scope\": \"farm_manager\"\n    }\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 60,
+        "wires": [
+            [
+                "82f91b36.552c78"
+            ]
+        ]
+    },
+    {
+        "id": "f22d1f8522c89d10",
+        "type": "ui_button",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "group": "16448850.68666",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Refresh Token",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 100,
+        "y": 60,
+        "wires": [
+            [
+                "c9e082dc448a834b"
+            ]
+        ]
+    },
+    {
+        "id": "6675e558320b8091",
+        "type": "debug",
+        "z": "58ff452f.d398fc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 750,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b5079d0.289126",
+        "type": "ui_group",
+        "name": "Server Info",
+        "tab": "7820596d.bb40b",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "16448850.68666",
+        "type": "ui_group",
+        "name": "Authorize farmOS",
+        "tab": "7820596d.bb40b",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "7820596d.bb40b",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
