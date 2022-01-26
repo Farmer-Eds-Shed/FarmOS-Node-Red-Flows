@@ -1,4 +1,4 @@
-# FarmOS-Node-Red-Flows
+# FarmOS-2.0-Node-Red-Flows
 
 Node Red flows for farmOS 2.0
 
