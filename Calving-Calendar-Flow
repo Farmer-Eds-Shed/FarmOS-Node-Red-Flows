@@ -1,0 +1,213 @@
+[
+    {
+        "id": "26984646ef29dfb6",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\n//Variables for after HTTP Request\nvar id = msg.payload.id;\nflow.set('id', id);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 180,
+        "wires": [
+            [
+                "05bfda674189d4be"
+            ]
+        ]
+    },
+    {
+        "id": "05bfda674189d4be",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Observation API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/log/observation');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 180,
+        "wires": [
+            [
+                "0e384646d151401b"
+            ]
+        ]
+    },
+    {
+        "id": "0e384646d151401b",
+        "type": "http request",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 930,
+        "y": 180,
+        "wires": [
+            [
+                "cc2d42d79ec2c4b2"
+            ]
+        ]
+    },
+    {
+        "id": "cc2d42d79ec2c4b2",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Search Observation",
+        "func": "let result = [];\nvar id = flow.get('id');\nmsg.payload.data.forEach(dat => {\n    if (dat.attributes.name.startsWith(id)) {\n        result.push(dat)\n        }\n    })\nmsg.payload = result;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 180,
+        "wires": [
+            [
+                "f5cb0ae8d1f64bf9"
+            ]
+        ]
+    },
+    {
+        "id": "a19081789bfef745",
+        "type": "debug",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "6bde3a55d24d5182",
+        "type": "google calendar out",
+        "z": "5e66b249191b19a9",
+        "google": "",
+        "name": "Farm Calendar",
+        "calendar": "Farm",
+        "x": 1880,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "f7d27dfb530e483f",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Send to Calendar",
+        "func": "var outputMsgs = [];\nvar date;\nvar event;\nvar output\nfor (var i = 0; i < msg.payload.length; i++) {\n    event = msg.payload[i].attributes.name;\n    date = new Date(msg.payload[i].attributes.timestamp);\n    output = event + \" all day on \" + date.toLocaleDateString('en-US');\n    outputMsgs.push({payload:output});\n}\nreturn [ outputMsgs ];",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 180,
+        "wires": [
+            [
+                "2a852d72b27bcdad",
+                "6bde3a55d24d5182"
+            ]
+        ]
+    },
+    {
+        "id": "2a852d72b27bcdad",
+        "type": "debug",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "date",
+        "statusType": "auto",
+        "x": 1610,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "128abcd9d1581d11",
+        "type": "ha-button",
+        "z": "5e66b249191b19a9",
+        "name": "Export Calving Calendar",
+        "version": 0,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityConfig": "ba1bbfe704289952",
+        "outputProperties": [
+            {
+                "property": "payload.id",
+                "propertyType": "msg",
+                "value": "Due Calving",
+                "valueType": "str"
+            }
+        ],
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [
+                "26984646ef29dfb6"
+            ]
+        ]
+    },
+    {
+        "id": "f5cb0ae8d1f64bf9",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Check for flag",
+        "func": "let result = [];\nmsg.payload.forEach(dat => {\n    dat.attributes.flag.forEach(flag => {\n        if (flag.endsWith(\"monitor\")) {\n            result.push(dat)\n        }\n    })\n})\nmsg.payload = result;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1360,
+        "y": 180,
+        "wires": [
+            [
+                "a19081789bfef745",
+                "f7d27dfb530e483f"
+            ]
+        ]
+    },
+    {
+        "id": "ba1bbfe704289952",
+        "type": "ha-entity-config",
+        "server": "ee8cdebf.dbf2e",
+        "name": "Export Calving Calendar",
+        "version": 2,
+        "haConfig": [
+            {
+                "property": "name",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            }
+        ],
+        "entityType": "button"
+    }
+]
