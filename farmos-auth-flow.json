@@ -1,0 +1,217 @@
+[
+    {
+        "id": "f7821dcb8df5c66d",
+        "type": "oauth2",
+        "z": "e932f38ab3065ee3",
+        "name": "",
+        "container": "payload",
+        "access_token_url": "http://localhost/oauth2/token",
+        "grant_type": "set_by_credentials",
+        "username": "paul",
+        "password": "test",
+        "client_id": "farmos_api_client",
+        "client_secret": "client_secret",
+        "scope": "farmos_restws_access",
+        "rejectUnauthorized": true,
+        "headers": {},
+        "x": 650,
+        "y": 180,
+        "wires": [
+            [
+                "fa30edb753b13f74",
+                "7ab8bab534ce3fe7"
+            ]
+        ]
+    },
+    {
+        "id": "9aefa3efdcb5b54c",
+        "type": "ui_text",
+        "z": "e932f38ab3065ee3",
+        "group": "16448850.68666",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Auth Token",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1090,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "530ee05e0863fb1f",
+        "type": "ui_form",
+        "z": "e932f38ab3065ee3",
+        "name": "",
+        "label": "OAuth",
+        "group": "16448850.68666",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "farmOS URL",
+                "value": "url",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Username",
+                "value": "username",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Password",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "url": "",
+            "username": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [
+                "c1c5cb7804c3d9d5"
+            ]
+        ]
+    },
+    {
+        "id": "fa30edb753b13f74",
+        "type": "function",
+        "z": "e932f38ab3065ee3",
+        "name": "Save OAuth Token",
+        "func": "if (msg.payload.access_token) {\n    var token = msg.payload.access_token;\n    var refresh = msg.payload.refresh_token;\n    global.set('token', token);\n    flow.set('refresh', refresh);\n    Time = new Date()\n    msg.payload = \"Access Granted \" + Time;\n    \n} else {\n    msg.payload = \"Authorization error.\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 180,
+        "wires": [
+            [
+                "9aefa3efdcb5b54c"
+            ]
+        ]
+    },
+    {
+        "id": "f4b123b4f2d28eba",
+        "type": "function",
+        "z": "e932f38ab3065ee3",
+        "name": "Refresh Token",
+        "func": "var refresh = flow.get('refresh');\n\nmsg.oauth2Request = {\n    \"access_token_url\": global.get('farmOSurl').concat('/oauth/token'), \n    \"credentials\": {\n        \"grant_type\": \"refresh_token\",\n        \"client_id\": \"farm\",\n        \"client_secret\": \"client_secret\",\n        \"refresh_token\": refresh,\n        \"scope\": \"farm_manager\"\n    }\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "f7821dcb8df5c66d"
+            ]
+        ]
+    },
+    {
+        "id": "fc9cf0198729f001",
+        "type": "ui_button",
+        "z": "e932f38ab3065ee3",
+        "name": "",
+        "group": "16448850.68666",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Refresh Token",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "f4b123b4f2d28eba"
+            ]
+        ]
+    },
+    {
+        "id": "c1c5cb7804c3d9d5",
+        "type": "function",
+        "z": "e932f38ab3065ee3",
+        "name": "Creat OAuth2Request",
+        "func": "var farmOSurl = msg.payload.url\nglobal.set('farmOSurl', farmOSurl);\n\nmsg.oauth2Request = { \n        \"access_token_url\": msg.payload.url.concat(\"/oauth/token\"), \n        \"credentials\": {\n            \"grant_type\": \"password\",\n            \"username\": msg.payload.username,\n            \"password\": msg.payload.password,\n            \"client_id\": \"farm\",\n            \"client_secret\": \"client_secret\",\n            \"scope\": \"farm_manager\"\n        }\n    };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 180,
+        "wires": [
+            [
+                "f7821dcb8df5c66d"
+            ]
+        ]
+    },
+    {
+        "id": "7ab8bab534ce3fe7",
+        "type": "debug",
+        "z": "e932f38ab3065ee3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "16448850.68666",
+        "type": "ui_group",
+        "name": "Authorize farmOS",
+        "tab": "e4996a8c673daf28",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e4996a8c673daf28",
+        "type": "ui_tab",
+        "name": "OAuth2",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
