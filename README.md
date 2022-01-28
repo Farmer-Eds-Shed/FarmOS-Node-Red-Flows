@@ -7,4 +7,4 @@ farmos-auth-flow.json - based on Paul121's flow for farmOS 1.x - https://gist.gi
 All farmOS flows will be dependant on farmos-auth-flow.json for Autentication
 
 
-Calving-Calendarflow.json flow to add cow calving due dates to Google Calendar.
+Calving-Calendar-flow.json flow to add cow calving due dates to Google Calendar.
