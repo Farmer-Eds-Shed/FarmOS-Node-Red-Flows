@@ -7,19 +7,18 @@
         "container": "payload",
         "access_token_url": "http://localhost/oauth2/token",
         "grant_type": "set_by_credentials",
-        "username": "paul",
-        "password": "test",
-        "client_id": "farmos_api_client",
-        "client_secret": "client_secret",
+        "username": "",
+        "password": "",
+        "client_id": "",
+        "client_secret": "",
         "scope": "farmos_restws_access",
         "rejectUnauthorized": true,
         "headers": {},
-        "x": 650,
-        "y": 180,
+        "x": 810,
+        "y": 200,
         "wires": [
             [
-                "fa30edb753b13f74",
-                "7ab8bab534ce3fe7"
+                "fa30edb753b13f74"
             ]
         ]
     },
@@ -36,8 +35,8 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1090,
-        "y": 180,
+        "x": 1250,
+        "y": 200,
         "wires": []
     },
     {
@@ -45,19 +44,12 @@
         "type": "ui_form",
         "z": "e932f38ab3065ee3",
         "name": "",
-        "label": "OAuth",
+        "label": "farmOS Login",
         "group": "16448850.68666",
         "order": 1,
         "width": 0,
         "height": 0,
         "options": [
-            {
-                "label": "farmOS URL",
-                "value": "url",
-                "type": "text",
-                "required": true,
-                "rows": null
-            },
             {
                 "label": "Username",
                 "value": "username",
@@ -74,7 +66,6 @@
             }
         ],
         "formValue": {
-            "url": "",
             "username": "",
             "password": ""
         },
@@ -85,11 +76,11 @@
         "topicType": "str",
         "splitLayout": false,
         "className": "",
-        "x": 210,
-        "y": 180,
+        "x": 160,
+        "y": 200,
         "wires": [
             [
-                "c1c5cb7804c3d9d5"
+                "f8540e45e65395d5"
             ]
         ]
     },
@@ -104,8 +95,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 830,
-        "y": 180,
+        "x": 1010,
+        "y": 200,
         "wires": [
             [
                 "9aefa3efdcb5b54c"
@@ -123,8 +114,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 120,
+        "x": 580,
+        "y": 140,
         "wires": [
             [
                 "f7821dcb8df5c66d"
@@ -151,8 +142,8 @@
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 180,
-        "y": 120,
+        "x": 160,
+        "y": 140,
         "wires": [
             [
                 "f4b123b4f2d28eba"
@@ -170,8 +161,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 440,
-        "y": 180,
+        "x": 600,
+        "y": 200,
         "wires": [
             [
                 "f7821dcb8df5c66d"
@@ -179,25 +170,28 @@
         ]
     },
     {
-        "id": "7ab8bab534ce3fe7",
-        "type": "debug",
+        "id": "f8540e45e65395d5",
+        "type": "credentials",
         "z": "e932f38ab3065ee3",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 830,
-        "y": 260,
-        "wires": []
+        "name": "farmOS URL ",
+        "props": [
+            {
+                "value": "payload.url",
+                "type": "msg"
+            }
+        ],
+        "x": 370,
+        "y": 200,
+        "wires": [
+            [
+                "c1c5cb7804c3d9d5"
+            ]
+        ]
     },
     {
         "id": "16448850.68666",
         "type": "ui_group",
-        "name": "Authorize farmOS",
+        "name": "",
         "tab": "e4996a8c673daf28",
         "order": 2,
         "disp": true,
@@ -208,7 +202,7 @@
     {
         "id": "e4996a8c673daf28",
         "type": "ui_tab",
-        "name": "OAuth2",
+        "name": "farmOS OAuth2",
         "icon": "dashboard",
         "order": 1,
         "disabled": false,
