@@ -41,17 +41,17 @@
         "id": "0e384646d151401b",
         "type": "http request",
         "z": "5e66b249191b19a9",
-        "name": "",
+        "name": "GET",
         "method": "use",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "",
+        "url": "GET",
         "tls": "",
         "persist": false,
         "proxy": "",
         "authType": "",
         "senderr": false,
-        "x": 930,
+        "x": 910,
         "y": 180,
         "wires": [
             [
@@ -79,23 +79,6 @@
         ]
     },
     {
-        "id": "a19081789bfef745",
-        "type": "debug",
-        "z": "5e66b249191b19a9",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 1350,
-        "y": 260,
-        "wires": []
-    },
-    {
         "id": "6bde3a55d24d5182",
         "type": "google calendar out",
         "z": "5e66b249191b19a9",
@@ -121,27 +104,9 @@
         "y": 180,
         "wires": [
             [
-                "2a852d72b27bcdad",
                 "6bde3a55d24d5182"
             ]
         ]
-    },
-    {
-        "id": "2a852d72b27bcdad",
-        "type": "debug",
-        "z": "5e66b249191b19a9",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "date",
-        "statusType": "auto",
-        "x": 1610,
-        "y": 260,
-        "wires": []
     },
     {
         "id": "128abcd9d1581d11",
@@ -172,8 +137,8 @@
         "id": "f5cb0ae8d1f64bf9",
         "type": "function",
         "z": "5e66b249191b19a9",
-        "name": "Check for flag",
-        "func": "let result = [];\nmsg.payload.forEach(dat => {\n    dat.attributes.flag.forEach(flag => {\n        if (flag.endsWith(\"monitor\")) {\n            result.push(dat)\n        }\n    })\n})\nmsg.payload = result;\nreturn msg;",
+        "name": "Check for flags",
+        "func": "let result = [];\nmsg.payload.forEach(dat => {\n    if (dat.attributes.data !== \"Google\") {\n        result.push(dat)\n        }\n    })\nmsg.payload = result;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -183,8 +148,123 @@
         "y": 180,
         "wires": [
             [
-                "a19081789bfef745",
-                "f7d27dfb530e483f"
+                "f7d27dfb530e483f",
+                "4d9d9c7dd3617d0f"
+            ]
+        ]
+    },
+    {
+        "id": "fc98fbc8e984c339",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 420,
+        "wires": [
+            [
+                "c923a904a6e8bed4"
+            ]
+        ]
+    },
+    {
+        "id": "c923a904a6e8bed4",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Observation API",
+        "func": "var UUID = msg.uuid\nmsg.url = global.get('farmOSurl').concat('/api/log/observation/' + UUID)\nmsg.method = \"PATCH\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 420,
+        "wires": [
+            [
+                "87989805a18b3f4e"
+            ]
+        ]
+    },
+    {
+        "id": "87989805a18b3f4e",
+        "type": "http request",
+        "z": "5e66b249191b19a9",
+        "name": "PATCH",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1340,
+        "y": 420,
+        "wires": [
+            [
+                "29be6430c190539e"
+            ]
+        ]
+    },
+    {
+        "id": "29be6430c190539e",
+        "type": "debug",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "statusCode",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1560,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "a774ad6d7e2f367b",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Set Flags",
+        "func": "var UUID = msg.payload\nmsg.payload = {\"data\":{\"type\":\"log--observation\",\"id\":UUID,\"attributes\":{\"data\":\"Google\"}}}\nmsg.uuid = UUID\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 420,
+        "wires": [
+            [
+                "fc98fbc8e984c339"
+            ]
+        ]
+    },
+    {
+        "id": "4d9d9c7dd3617d0f",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Get Log UUID's",
+        "func": "var outputMsgs = [];\nvar UUID;\nfor (var i = 0; i < msg.payload.length; i++) {\n    UUID = msg.payload[i].id;\n    outputMsgs.push({payload:UUID});\n}\nreturn [ outputMsgs ];\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 300,
+        "wires": [
+            [
+                "a774ad6d7e2f367b"
             ]
         ]
     },
