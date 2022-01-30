@@ -1,0 +1,60 @@
+[
+    {
+        "id": "b6323cce45f89ef0",
+        "type": "inject",
+        "z": "e932f38ab3065ee3",
+        "name": "Cron",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 01 * * *",
+        "once": false,
+        "onceDelay": "10",
+        "topic": "",
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "0b332cc1fc720572"
+            ]
+        ]
+    },
+    {
+        "id": "0b332cc1fc720572",
+        "type": "credentials",
+        "z": "e932f38ab3065ee3",
+        "name": "Cron URL",
+        "props": [
+            {
+                "value": "url",
+                "type": "msg"
+            }
+        ],
+        "x": 300,
+        "y": 340,
+        "wires": [
+            [
+                "d039292aeed5575a"
+            ]
+        ]
+    },
+    {
+        "id": "d039292aeed5575a",
+        "type": "exec",
+        "z": "e932f38ab3065ee3",
+        "command": "curl -s",
+        "addpay": "url",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "farmOS Cron",
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    }
+]
