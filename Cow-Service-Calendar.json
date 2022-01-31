@@ -1,0 +1,441 @@
+[
+    {
+        "id": "53ce1c3904039e82",
+        "type": "google calendar in",
+        "z": "5e66b249191b19a9",
+        "google": "",
+        "name": "",
+        "calendar": "Farm",
+        "offsetType": "at",
+        "offsetFrom": "start",
+        "offset": "1",
+        "offsetUnits": "minutes",
+        "x": 120,
+        "y": 620,
+        "wires": [
+            [
+                "358a275db3fe5058"
+            ]
+        ]
+    },
+    {
+        "id": "0fae836c33bb70c9",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Read Calendar",
+        "func": "var title = msg.payload.title;\nvar notes;\nvar servicedate;\nif (title.startsWith(\"Cow Serviced\")){\n    notes = msg.payload.description;\n    servicedate = Date.parse(msg.payload.start);\n    flow.set('notes', notes);\n    flow.set('servicedate', servicedate)\n    msg.title = title;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 740,
+        "wires": [
+            [
+                "4cfbce9a6141332c"
+            ]
+        ]
+    },
+    {
+        "id": "036d637e17cfb40d",
+        "type": "inject",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{ \t\"title\": \"C Serviced 450\", \t\"description\": \"Cow 724\\nBull 9999\", \t\"start\": \"2022-01-29T08:00:00.000Z\", \t\"end\": \"2022-01-29T09:00:00.000Z\", \t\"creator\": { \t\t\"email\": \"emaherx@gmail.com\" \t} }",
+        "payloadType": "json",
+        "x": 90,
+        "y": 740,
+        "wires": [
+            [
+                "358a275db3fe5058"
+            ]
+        ]
+    },
+    {
+        "id": "4cfbce9a6141332c",
+        "type": "change",
+        "z": "5e66b249191b19a9",
+        "name": "Cow Name",
+        "rules": [
+            {
+                "t": "change",
+                "p": "title",
+                "pt": "msg",
+                "from": "Cow Serviced",
+                "fromt": "str",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 740,
+        "wires": [
+            [
+                "41256c2697413274"
+            ]
+        ]
+    },
+    {
+        "id": "6902e1ddddb90965",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\n//Variables for after HTTP Request\nvar cowid = msg.title;\nflow.set('cowid', cowid);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 740,
+        "wires": [
+            [
+                "0e9b80d8d713684b"
+            ]
+        ]
+    },
+    {
+        "id": "0e9b80d8d713684b",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Animal Asset API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/asset/animal');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1250,
+        "y": 740,
+        "wires": [
+            [
+                "1c038d5ff6618248"
+            ]
+        ]
+    },
+    {
+        "id": "1c038d5ff6618248",
+        "type": "http request",
+        "z": "5e66b249191b19a9",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1430,
+        "y": 740,
+        "wires": [
+            [
+                "dfb3114053654829"
+            ]
+        ]
+    },
+    {
+        "id": "dfb3114053654829",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Search Observation",
+        "func": "let result = [];\nvar cowid = flow.get('cowid');\nmsg.payload.data.forEach(dat => {\n    if (dat.attributes.name.endsWith(cowid)) {\n        result.push(dat)\n        }\n    })\nmsg.payload = result;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 740,
+        "wires": [
+            [
+                "a8ad2b7d943808d9",
+                "e7ea22912ad12c9c"
+            ]
+        ]
+    },
+    {
+        "id": "41256c2697413274",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "trim()",
+        "func": "msg.title = msg.title.trim()\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 740,
+        "wires": [
+            [
+                "6902e1ddddb90965"
+            ]
+        ]
+    },
+    {
+        "id": "a8ad2b7d943808d9",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Create Serviced Log",
+        "func": "var UUID;\nvar notes;\nvar servicedate;\nvar cowid;\nvar timestamp;\nUUID = msg.payload[0].id;\nnotes = flow.get('notes');\nservicedate = flow.get('servicedate');\ncowid = flow.get('cowid');\n\nservicedate = new Date(servicedate);\ntimestamp = servicedate.toLocaleDateString('en-UK');\n\n//Time + Date formatting\nfunction padZero(i) {\n    return i < 10 ? \"0\"+i : i;\n}\nconst dateString = timestamp;\nconst parts = dateString.split(\"/\");\nconst date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));\nconst newDateString = date.getFullYear()+'-' + (padZero(date.getMonth()+1)) + '-'+padZero(date.getDate());\n\n\nmsg.payload = {\n  \"data\": {\n    \"type\": \"log--observation\",\n    \"attributes\": {\n      \"name\": \"Cow Serviced \" + cowid,\n      \"data\": \"Google\",\n      \"notes\": notes,\n      \"timestamp\": newDateString + \"T00:00:00+00:00\",\n\t  \"flag\": [\n\t\t\"review\"\n\t],\n\n  },\n      \"relationships\": {\n      \"asset\": {\n        \"data\": {\n\t\t\t\"type\": \"asset--animal\",\n\t\t\t\"id\": UUID\n        }\n      }\n    }\n  }\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 860,
+        "wires": [
+            [
+                "4e18411fd3ac75c9"
+            ]
+        ]
+    },
+    {
+        "id": "e7ea22912ad12c9c",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Create Due Log",
+        "func": "var UUID;\nvar notes;\nvar servicedate;\nvar duedate;\nvar timestamp;\nvar cowid;\nUUID = msg.payload[0].id;\nnotes = flow.get('notes');\nservicedate = flow.get('servicedate');\ncowid = flow.get('cowid');\nduedate = servicedate + 24451200000;\nduedate = new Date(duedate);\ntimestamp = duedate.toLocaleDateString('en-UK');\n\n//Time + Date formatting\nfunction padZero(i) {\n    return i < 10 ? \"0\"+i : i;\n}\nconst dateString = timestamp;\nconst parts = dateString.split(\"/\");\nconst date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));\nconst newDateString = date.getFullYear()+'-' + (padZero(date.getMonth()+1)) + '-'+padZero(date.getDate());\n\nmsg.payload = {\n  \"data\": {\n    \"type\": \"log--observation\",\n    \"attributes\": {\n      \"name\": \"Due Calving \" + cowid,\n      \"data\": \"Google\",\n      \"notes\": notes,\n      \"timestamp\": newDateString + \"T00:00:00+00:00\",\n\t  \"flag\": [\n\t\t\"review\"\n\t],\n    },\n      \"relationships\": {\n      \"asset\": {\n        \"data\": [ \n        {\n\t\t\t\"type\": \"asset--animal\",\n\t\t\t\"id\": UUID,\n        }\n        ],\n      }\n}\n  }\n}\n\nmsg.google = \"Due Calving \" + cowid + \" all day on \" + duedate.toLocaleDateString('en-US');\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 860,
+        "wires": [
+            [
+                "05f3f2f1dfd34ad1",
+                "5b19827951e7a749"
+            ]
+        ]
+    },
+    {
+        "id": "e3227c8f9ad09b4e",
+        "type": "google calendar out",
+        "z": "5e66b249191b19a9",
+        "google": "",
+        "name": "",
+        "calendar": "Farm",
+        "x": 1050,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "05f3f2f1dfd34ad1",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Due Date to Calendar",
+        "func": "msg.payload = msg.google\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 1060,
+        "wires": [
+            [
+                "e3227c8f9ad09b4e"
+            ]
+        ]
+    },
+    {
+        "id": "5b19827951e7a749",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 940,
+        "wires": [
+            [
+                "dc29a3f2d2401273"
+            ]
+        ]
+    },
+    {
+        "id": "dc29a3f2d2401273",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Observation API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/log/observation')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 940,
+        "wires": [
+            [
+                "ce2597006c5502cc"
+            ]
+        ]
+    },
+    {
+        "id": "ce2597006c5502cc",
+        "type": "http request",
+        "z": "5e66b249191b19a9",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1210,
+        "y": 940,
+        "wires": [
+            [
+                "6994bbd6e9992baa"
+            ]
+        ]
+    },
+    {
+        "id": "4e18411fd3ac75c9",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 860,
+        "wires": [
+            [
+                "c91515fb4a4e3fbd"
+            ]
+        ]
+    },
+    {
+        "id": "c91515fb4a4e3fbd",
+        "type": "function",
+        "z": "5e66b249191b19a9",
+        "name": "Observation API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/log/observation/')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 860,
+        "wires": [
+            [
+                "1df0a36df58ae05e"
+            ]
+        ]
+    },
+    {
+        "id": "1df0a36df58ae05e",
+        "type": "http request",
+        "z": "5e66b249191b19a9",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1450,
+        "y": 860,
+        "wires": [
+            [
+                "a2149fa0923dd0c1"
+            ]
+        ]
+    },
+    {
+        "id": "6994bbd6e9992baa",
+        "type": "debug",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "statusCode",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "a2149fa0923dd0c1",
+        "type": "debug",
+        "z": "5e66b249191b19a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "statusCode",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1620,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "358a275db3fe5058",
+        "type": "switch",
+        "z": "5e66b249191b19a9",
+        "name": "Serviced?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "Cow Serviced",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 300,
+        "y": 740,
+        "wires": [
+            [
+                "0fae836c33bb70c9"
+            ]
+        ]
+    }
+]
