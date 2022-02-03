@@ -1,0 +1,186 @@
+[
+    {
+        "id": "dc30d2cb78dfe13a",
+        "type": "file in",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "filename": "/share/Node Red FarmOS/DAFM-Breeds.csv",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 390,
+        "y": 480,
+        "wires": [
+            [
+                "b824ba4da2fa25d2"
+            ]
+        ]
+    },
+    {
+        "id": "ba196730395d6e55",
+        "type": "inject",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "dc30d2cb78dfe13a"
+            ]
+        ]
+    },
+    {
+        "id": "b824ba4da2fa25d2",
+        "type": "csv to json ext",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "version": "0.1",
+        "source": "filename",
+        "delimiter": ",",
+        "quote": "\"",
+        "escape": "\"",
+        "ignoreEmpty": false,
+        "checkType": false,
+        "trim": false,
+        "noheader": false,
+        "includeColumns": "",
+        "headers": "",
+        "debug": false,
+        "x": 670,
+        "y": 480,
+        "wires": [
+            [
+                "1d3626589559453d"
+            ]
+        ]
+    },
+    {
+        "id": "1d3626589559453d",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "func": "//Declare Variables\nlet outputMsgs = [];\nvar breed,code;\nvar asset\n\n//Start loop to Read CSV one line at a time\nmsg.payload.forEach(data => {\n\n//extract data from CSV\nbreed = data.Breed;\ncode = data.Code\n\n\n\n\n//Create Asset Object \nasset = {\"data\":\n\t\t{\n\t\t\t\"type\": \"taxonomy_term--animal_type\",\n\t\t\t\"attributes\": {\n\t\t\t\t\"status\": true,\n\t\t\t\t\"name\": code,\n\t\t\t\t\"description\": {\n\t\t\t\t\t\"value\": breed,\n\t\t\t\t\t\"format\": \"default\",\n\t\t\t\t}\n\t\t\t}\n\t\t}\n}\n\noutputMsgs.push({payload:asset}); //push Assets to next node one at a time\n    }) //End Loop\n\n\nreturn [ outputMsgs ];\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 480,
+        "wires": [
+            [
+                "8c6d4b96fe722092"
+            ]
+        ]
+    },
+    {
+        "id": "341db1c04595de55",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 640,
+        "wires": [
+            [
+                "1a828745546d4168"
+            ]
+        ]
+    },
+    {
+        "id": "1a828745546d4168",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "Animal Terms API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/taxonomy_term/animal_type')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 640,
+        "wires": [
+            [
+                "0b9e7a21616bd3c9"
+            ]
+        ]
+    },
+    {
+        "id": "0b9e7a21616bd3c9",
+        "type": "http request",
+        "z": "7ceea68010fdccbc",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 630,
+        "y": 640,
+        "wires": [
+            [
+                "bbecd90205c00c11"
+            ]
+        ]
+    },
+    {
+        "id": "bbecd90205c00c11",
+        "type": "debug",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "8c6d4b96fe722092",
+        "type": "delay",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 460,
+        "y": 560,
+        "wires": [
+            [
+                "341db1c04595de55"
+            ]
+        ]
+    }
+]

@@ -1,0 +1,271 @@
+[
+    {
+        "id": "1a96a56f081f1473",
+        "type": "file in",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "filename": "/share/Node Red FarmOS/Herd Profile.csv",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 470,
+        "y": 140,
+        "wires": [
+            [
+                "d703546acbbc37fb"
+            ]
+        ]
+    },
+    {
+        "id": "c21c87e034ef1ef5",
+        "type": "inject",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "1a96a56f081f1473",
+                "46ceac54848118e4"
+            ]
+        ]
+    },
+    {
+        "id": "d703546acbbc37fb",
+        "type": "csv to json ext",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "version": "0.1",
+        "source": "filename",
+        "delimiter": ",",
+        "quote": "\"",
+        "escape": "\"",
+        "ignoreEmpty": false,
+        "checkType": false,
+        "trim": false,
+        "noheader": false,
+        "includeColumns": "",
+        "headers": "",
+        "debug": false,
+        "x": 750,
+        "y": 140,
+        "wires": [
+            [
+                "fb2dbed29f537e54"
+            ]
+        ]
+    },
+    {
+        "id": "829bec3c03c33b03",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "func": "//Declare Variables\nlet outputMsgs = [];\nvar tag,gender,dob,breed;\nvar asset,UUID;\n\n//Start loop to Read CSV one line at a time\nmsg.payload[0].forEach(data => {\n\n//extract data from CSV\ntag = data[\"Tag Number\"];\ngender = data.Gender\ndob = data[\"Date of Birth\"]\nbreed = data.Breed;\n\n//loop to find breed UUID\nmsg.payload[1].data.forEach(data2 => {\n    if (data2.attributes.name == breed) {\n        UUID = data2.id;\n        }   \n    else (UUID = null)\n    })\n\n//Start Date formatting\nfunction padZero(i) {\n    return i < 10 ? \"0\"+i : i;\n}\nconst dateString = dob;\nconst parts = dateString.split(\"/\");\nconst date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));\nconst newDateString = date.getFullYear()+'-' + (padZero(date.getMonth()+1)) + '-'+padZero(date.getDate());\n//End Date formatting\n\n//Create Asset Object \nasset = {\n  \"data\": {\n    \"type\": \"asset--animal\",\n    \"attributes\": {\n      \"name\": tag.slice(-3), //name is last 3 digits of tag number \n      \"id_tag\": [ \n\t\t{\n\t\t\"id\": tag,\n\t\t\"type\": \"ear_tag\",\n\t\t\"location\": \"\"\n\t\t}\n\t],\n        \"birthdate\": newDateString + \"T00:00:00+00:00\", //Formatted Date @ midnight\n        \"sex\": gender.charAt(0), //reduce Male/Female to M/F\n        \n        \n    },\n   \"relationships\": {\n\t\t\"animal_type\": {\n\t\t\t\"data\": {\n\t\t\t    \"type\": \"taxonomy_term--animal_type\",\n\t\t\t\t\"id\": UUID,\n}\n  }\n}\n}\n      \n}\noutputMsgs.push({payload:asset}); //push Assets to next node one at a time\n    }) //End Loop\n\n\nreturn [ outputMsgs ];\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 200,
+        "wires": [
+            [
+                "f31fa1d366343122"
+            ]
+        ]
+    },
+    {
+        "id": "40b804eb8f9ee36e",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 500,
+        "wires": [
+            [
+                "75dd86bf0ee90196"
+            ]
+        ]
+    },
+    {
+        "id": "75dd86bf0ee90196",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "Animal Asset API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/asset/animal')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 500,
+        "wires": [
+            [
+                "091dfdd2c0e594b2"
+            ]
+        ]
+    },
+    {
+        "id": "091dfdd2c0e594b2",
+        "type": "http request",
+        "z": "7ceea68010fdccbc",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 730,
+        "y": 500,
+        "wires": [
+            [
+                "93e3b6ac043cbebb"
+            ]
+        ]
+    },
+    {
+        "id": "93e3b6ac043cbebb",
+        "type": "debug",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 890,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "46ceac54848118e4",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2c1f6984d038dbc1",
+        "type": "http request",
+        "z": "7ceea68010fdccbc",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 770,
+        "y": 260,
+        "wires": [
+            [
+                "fb2dbed29f537e54"
+            ]
+        ]
+    },
+    {
+        "id": "fb2dbed29f537e54",
+        "type": "join",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "2",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 930,
+        "y": 200,
+        "wires": [
+            [
+                "829bec3c03c33b03",
+                "6777db1c487f3c65"
+            ]
+        ]
+    },
+    {
+        "id": "f31fa1d366343122",
+        "type": "delay",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 620,
+        "y": 380,
+        "wires": [
+            [
+                "40b804eb8f9ee36e"
+            ]
+        ]
+    },
+    {
+        "id": "6777db1c487f3c65",
+        "type": "debug",
+        "z": "7ceea68010fdccbc",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 80,
+        "wires": []
+    }
+]
