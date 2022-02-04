@@ -68,17 +68,18 @@
         "type": "function",
         "z": "7ceea68010fdccbc",
         "name": "",
-        "func": "//Declare Variables\nlet outputMsgs = [];\nvar tag,gender,dob,breed;\nvar asset,UUID;\n\n//Start loop to Read CSV one line at a time\nmsg.payload[0].forEach(data => {\n\n//extract data from CSV\ntag = data[\"Tag Number\"];\ngender = data.Gender\ndob = data[\"Date of Birth\"]\nbreed = data.Breed;\n\n//loop to find breed UUID\nmsg.payload[1].data.forEach(data2 => {\n    if (data2.attributes.name == breed) {\n        UUID = data2.id;\n        }   \n    else (UUID = null)\n    })\n\n//Start Date formatting\nfunction padZero(i) {\n    return i < 10 ? \"0\"+i : i;\n}\nconst dateString = dob;\nconst parts = dateString.split(\"/\");\nconst date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));\nconst newDateString = date.getFullYear()+'-' + (padZero(date.getMonth()+1)) + '-'+padZero(date.getDate());\n//End Date formatting\n\n//Create Asset Object \nasset = {\n  \"data\": {\n    \"type\": \"asset--animal\",\n    \"attributes\": {\n      \"name\": tag.slice(-3), //name is last 3 digits of tag number \n      \"id_tag\": [ \n\t\t{\n\t\t\"id\": tag,\n\t\t\"type\": \"ear_tag\",\n\t\t\"location\": \"\"\n\t\t}\n\t],\n        \"birthdate\": newDateString + \"T00:00:00+00:00\", //Formatted Date @ midnight\n        \"sex\": gender.charAt(0), //reduce Male/Female to M/F\n        \n        \n    },\n   \"relationships\": {\n\t\t\"animal_type\": {\n\t\t\t\"data\": {\n\t\t\t    \"type\": \"taxonomy_term--animal_type\",\n\t\t\t\t\"id\": UUID,\n}\n  }\n}\n}\n      \n}\noutputMsgs.push({payload:asset}); //push Assets to next node one at a time\n    }) //End Loop\n\n\nreturn [ outputMsgs ];\n\n",
+        "func": "//Declare Variables\nlet outputMsgs = [];\nvar tag,gender,dob,breed;\nvar asset,UUID;\n\n//Start loop to Read CSV one line at a time\nmsg.payload[0].forEach(data => {\n\n//extract data from CSV\ntag = data[\"Tag Number\"];\ngender = data.Gender\ndob = data[\"Date of Birth\"]\nbreed = data.Breed;\n\n//loop to find breed UUID\nmsg.payload[1].data.forEach(data2 => {\n    if (data2.attributes.name == breed) {\n        UUID = data2.id;\n        }   \n    })\n\n//Start Date formatting\nfunction padZero(i) {\n    return i < 10 ? \"0\"+i : i;\n}\nconst dateString = dob;\nconst parts = dateString.split(\"/\");\nconst date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));\nconst newDateString = date.getFullYear()+'-' + (padZero(date.getMonth()+1)) + '-'+padZero(date.getDate());\n//End Date formatting\n\n//Create Asset Object \nasset = {\n  \"data\": {\n    \"type\": \"asset--animal\",\n    \"attributes\": {\n      \"name\": tag.slice(-3), //name is last 3 digits of tag number \n      \"id_tag\": [ \n\t\t{\n\t\t\"id\": tag,\n\t\t\"type\": \"ear_tag\",\n\t\t\"location\": \"\"\n\t\t}\n\t],\n        \"birthdate\": newDateString + \"T00:00:00+00:00\", //Formatted Date @ midnight\n        \"sex\": gender.charAt(0), //reduce Male/Female to M/F\n        \n        \n    },\n   \"relationships\": {\n\t\t\"animal_type\": {\n\t\t\t\"data\": {\n\t\t\t    \"type\": \"taxonomy_term--animal_type\",\n\t\t\t\t\"id\": UUID,\n}\n  }\n}\n}\n      \n}\noutputMsgs.push({payload:asset}); //push Assets to next node one at a time\n    }) //End Loop\n\n\nreturn [ outputMsgs ];\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1140,
+        "x": 1080,
         "y": 200,
         "wires": [
             [
-                "f31fa1d366343122"
+                "f31fa1d366343122",
+                "6777db1c487f3c65"
             ]
         ]
     },
@@ -173,7 +174,28 @@
         "x": 360,
         "y": 260,
         "wires": [
-            []
+            [
+                "983902bb1afc9ce4"
+            ]
+        ]
+    },
+    {
+        "id": "983902bb1afc9ce4",
+        "type": "function",
+        "z": "7ceea68010fdccbc",
+        "name": "Animal Terms API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/taxonomy_term/animal_type');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 260,
+        "wires": [
+            [
+                "2c1f6984d038dbc1"
+            ]
         ]
     },
     {
@@ -222,8 +244,7 @@
         "y": 200,
         "wires": [
             [
-                "829bec3c03c33b03",
-                "6777db1c487f3c65"
+                "829bec3c03c33b03"
             ]
         ]
     },
@@ -264,8 +285,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1110,
-        "y": 80,
+        "x": 1270,
+        "y": 200,
         "wires": []
     }
 ]
