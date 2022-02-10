@@ -1,0 +1,44 @@
+[
+    {
+        "id": "1a96a56f081f1473",
+        "type": "file in",
+        "z": "206496a20cb8cbbd",
+        "name": "",
+        "filename": "",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "d703546acbbc37fb"
+            ]
+        ]
+    },
+    {
+        "id": "d703546acbbc37fb",
+        "type": "csv to json ext",
+        "z": "206496a20cb8cbbd",
+        "name": "",
+        "version": "0.1",
+        "source": "filename",
+        "delimiter": ",",
+        "quote": "\"",
+        "escape": "\"",
+        "ignoreEmpty": false,
+        "checkType": false,
+        "trim": false,
+        "noheader": false,
+        "includeColumns": "",
+        "headers": "",
+        "debug": false,
+        "x": 590,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
