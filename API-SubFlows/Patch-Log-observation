@@ -1,0 +1,60 @@
+[
+    {
+        "id": "fc98fbc8e984c339",
+        "type": "function",
+        "z": "17198ea8c749649f",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "c923a904a6e8bed4"
+            ]
+        ]
+    },
+    {
+        "id": "c923a904a6e8bed4",
+        "type": "function",
+        "z": "17198ea8c749649f",
+        "name": "Observation API",
+        "func": "var UUID = msg.uuid\nmsg.url = global.get('farmOSurl').concat('/api/log/observation/' + UUID)\nmsg.method = \"PATCH\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "87989805a18b3f4e"
+            ]
+        ]
+    },
+    {
+        "id": "87989805a18b3f4e",
+        "type": "http request",
+        "z": "17198ea8c749649f",
+        "name": "PATCH",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 600,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
