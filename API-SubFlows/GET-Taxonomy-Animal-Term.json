@@ -1,0 +1,60 @@
+[
+    {
+        "id": "46ceac54848118e4",
+        "type": "function",
+        "z": "0b62d3613b5f679a",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "983902bb1afc9ce4"
+            ]
+        ]
+    },
+    {
+        "id": "983902bb1afc9ce4",
+        "type": "function",
+        "z": "0b62d3613b5f679a",
+        "name": "Animal Terms API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/taxonomy_term/animal_type');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "2c1f6984d038dbc1"
+            ]
+        ]
+    },
+    {
+        "id": "2c1f6984d038dbc1",
+        "type": "http request",
+        "z": "0b62d3613b5f679a",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
