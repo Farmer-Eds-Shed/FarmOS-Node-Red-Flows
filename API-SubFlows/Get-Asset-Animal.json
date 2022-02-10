@@ -1,0 +1,60 @@
+[
+    {
+        "id": "6902e1ddddb90965",
+        "type": "function",
+        "z": "e4dbd4aa15ac01e7",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\n//Variables for after HTTP Request\nvar cowid = msg.title;\nflow.set('cowid', cowid);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "0e9b80d8d713684b"
+            ]
+        ]
+    },
+    {
+        "id": "0e9b80d8d713684b",
+        "type": "function",
+        "z": "e4dbd4aa15ac01e7",
+        "name": "Animal Asset API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/asset/animal');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "1c038d5ff6618248"
+            ]
+        ]
+    },
+    {
+        "id": "1c038d5ff6618248",
+        "type": "http request",
+        "z": "e4dbd4aa15ac01e7",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
