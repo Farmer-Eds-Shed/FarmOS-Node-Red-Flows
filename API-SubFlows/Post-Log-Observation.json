@@ -1,0 +1,60 @@
+[
+    {
+        "id": "5b19827951e7a749",
+        "type": "function",
+        "z": "75c2f11f159fc393",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "dc29a3f2d2401273"
+            ]
+        ]
+    },
+    {
+        "id": "dc29a3f2d2401273",
+        "type": "function",
+        "z": "75c2f11f159fc393",
+        "name": "Observation API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/log/observation')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "ce2597006c5502cc"
+            ]
+        ]
+    },
+    {
+        "id": "ce2597006c5502cc",
+        "type": "http request",
+        "z": "75c2f11f159fc393",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 590,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
