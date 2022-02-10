@@ -1,0 +1,85 @@
+[
+    {
+        "id": "40b804eb8f9ee36e",
+        "type": "function",
+        "z": "ef61916a42ae78a5",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "75dd86bf0ee90196"
+            ]
+        ]
+    },
+    {
+        "id": "75dd86bf0ee90196",
+        "type": "function",
+        "z": "ef61916a42ae78a5",
+        "name": "Animal Asset API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/asset/animal')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "091dfdd2c0e594b2"
+            ]
+        ]
+    },
+    {
+        "id": "091dfdd2c0e594b2",
+        "type": "http request",
+        "z": "ef61916a42ae78a5",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f31fa1d366343122",
+        "type": "delay",
+        "z": "ef61916a42ae78a5",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 80,
+        "wires": [
+            [
+                "40b804eb8f9ee36e"
+            ]
+        ]
+    }
+]
