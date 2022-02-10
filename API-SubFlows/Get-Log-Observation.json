@@ -1,0 +1,60 @@
+[
+    {
+        "id": "26984646ef29dfb6",
+        "type": "function",
+        "z": "bb6d8cdd75a6191f",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "05bfda674189d4be"
+            ]
+        ]
+    },
+    {
+        "id": "05bfda674189d4be",
+        "type": "function",
+        "z": "bb6d8cdd75a6191f",
+        "name": "Observation API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/log/observation');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "0e384646d151401b"
+            ]
+        ]
+    },
+    {
+        "id": "0e384646d151401b",
+        "type": "http request",
+        "z": "bb6d8cdd75a6191f",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 590,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
