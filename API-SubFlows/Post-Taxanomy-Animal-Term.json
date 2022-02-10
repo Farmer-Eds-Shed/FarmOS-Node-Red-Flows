@@ -1,0 +1,85 @@
+[
+    {
+        "id": "341db1c04595de55",
+        "type": "function",
+        "z": "9f6e275eb6abb3aa",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [
+                "1a828745546d4168"
+            ]
+        ]
+    },
+    {
+        "id": "1a828745546d4168",
+        "type": "function",
+        "z": "9f6e275eb6abb3aa",
+        "name": "Animal Terms API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/taxonomy_term/animal_type')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 160,
+        "wires": [
+            [
+                "0b9e7a21616bd3c9"
+            ]
+        ]
+    },
+    {
+        "id": "0b9e7a21616bd3c9",
+        "type": "http request",
+        "z": "9f6e275eb6abb3aa",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8c6d4b96fe722092",
+        "type": "delay",
+        "z": "9f6e275eb6abb3aa",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 440,
+        "y": 80,
+        "wires": [
+            [
+                "341db1c04595de55"
+            ]
+        ]
+    }
+]
