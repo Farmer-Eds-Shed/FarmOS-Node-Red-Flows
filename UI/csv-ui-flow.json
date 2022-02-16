@@ -1,5 +1,378 @@
 [
     {
+        "id": "206496a20cb8cbbd",
+        "type": "subflow",
+        "name": "Read CSV File",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "1a96a56f081f1473"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 740,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "d703546acbbc37fb",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "1a96a56f081f1473",
+        "type": "file in",
+        "z": "206496a20cb8cbbd",
+        "name": "",
+        "filename": "",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "d703546acbbc37fb"
+            ]
+        ]
+    },
+    {
+        "id": "d703546acbbc37fb",
+        "type": "csv to json ext",
+        "z": "206496a20cb8cbbd",
+        "name": "",
+        "version": "0.1",
+        "source": "filename",
+        "delimiter": ",",
+        "quote": "\"",
+        "escape": "\"",
+        "ignoreEmpty": false,
+        "checkType": false,
+        "trim": false,
+        "noheader": false,
+        "includeColumns": "",
+        "headers": "",
+        "debug": false,
+        "x": 590,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ef61916a42ae78a5",
+        "type": "subflow",
+        "name": "POST Asset Animal",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 340,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "f31fa1d366343122"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 740,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "091dfdd2c0e594b2",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "40b804eb8f9ee36e",
+        "type": "function",
+        "z": "ef61916a42ae78a5",
+        "name": "Prepare HTTP request",
+        "func": "var token = global.get('token');\nmsg.headers = {};\nmsg.headers['Authorization'] = \"Bearer \"+token;\nmsg.headers['Accept'] = \"application/vnd.api+json\";\nmsg.headers['content-type'] = 'application/vnd.api+json';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "75dd86bf0ee90196"
+            ]
+        ]
+    },
+    {
+        "id": "75dd86bf0ee90196",
+        "type": "function",
+        "z": "ef61916a42ae78a5",
+        "name": "Animal Asset API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/asset/animal')\nmsg.method = \"POST\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "091dfdd2c0e594b2"
+            ]
+        ]
+    },
+    {
+        "id": "091dfdd2c0e594b2",
+        "type": "http request",
+        "z": "ef61916a42ae78a5",
+        "name": "POST",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f31fa1d366343122",
+        "type": "delay",
+        "z": "ef61916a42ae78a5",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 80,
+        "wires": [
+            [
+                "40b804eb8f9ee36e"
+            ]
+        ]
+    },
+    {
+        "id": "0b62d3613b5f679a",
+        "type": "subflow",
+        "name": "GET Taxonomy Animal Term",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 20,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "46ceac54848118e4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 740,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "2c1f6984d038dbc1",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "46ceac54848118e4",
+        "type": "function",
+        "z": "0b62d3613b5f679a",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "983902bb1afc9ce4"
+            ]
+        ]
+    },
+    {
+        "id": "983902bb1afc9ce4",
+        "type": "function",
+        "z": "0b62d3613b5f679a",
+        "name": "Animal Terms API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/taxonomy_term/animal_type');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "2c1f6984d038dbc1"
+            ]
+        ]
+    },
+    {
+        "id": "2c1f6984d038dbc1",
+        "type": "http request",
+        "z": "0b62d3613b5f679a",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e4dbd4aa15ac01e7",
+        "type": "subflow",
+        "name": "Get Asset Animal",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 20,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "6902e1ddddb90965"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 740,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "1c038d5ff6618248",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "6902e1ddddb90965",
+        "type": "function",
+        "z": "e4dbd4aa15ac01e7",
+        "name": "Prepare HTTP request",
+        "func": "//variables for HTTP Request\nvar token = global.get('token');\nmsg.headers = {\n    Authorization: \"Bearer \"+token\n}\n\n//Variables for after HTTP Request\nvar cowid = msg.title;\nflow.set('cowid', cowid);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "0e9b80d8d713684b"
+            ]
+        ]
+    },
+    {
+        "id": "0e9b80d8d713684b",
+        "type": "function",
+        "z": "e4dbd4aa15ac01e7",
+        "name": "Animal Asset API",
+        "func": "msg.url = global.get('farmOSurl').concat('/api/asset/animal');\nmsg.method = \"GET\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "1c038d5ff6618248"
+            ]
+        ]
+    },
+    {
+        "id": "1c038d5ff6618248",
+        "type": "http request",
+        "z": "e4dbd4aa15ac01e7",
+        "name": "GET",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
         "id": "29bd3de508a69837",
         "type": "subflow",
         "name": "FIle Upload",
@@ -317,8 +690,8 @@
         "z": "e5dcf3c3680b7f84",
         "name": "File Browser",
         "info": "",
-        "x": 170,
-        "y": 140,
+        "x": 190,
+        "y": 400,
         "wires": []
     },
     {
@@ -336,41 +709,13 @@
         "depth": 0,
         "stat": true,
         "showWarnings": false,
-        "x": 570,
-        "y": 240,
+        "x": 590,
+        "y": 500,
         "wires": [
             [
                 "34d43731c093fbb2",
-                "8b2224e9a0690eb7"
-            ]
-        ]
-    },
-    {
-        "id": "a84d526f99727170",
-        "type": "inject",
-        "z": "e5dcf3c3680b7f84",
-        "name": "Init",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "change",
-        "payload": "/share/Node Red FarmOS",
-        "payloadType": "str",
-        "x": 110,
-        "y": 240,
-        "wires": [
-            [
-                "d1c8d8b2db639d2a"
+                "8b2224e9a0690eb7",
+                "659be91b464e2793"
             ]
         ]
     },
@@ -390,15 +735,16 @@
         "bgcolor": "",
         "className": "",
         "icon": "refresh",
-        "payload": "",
+        "payload": "\"\"",
         "payloadType": "str",
-        "topic": "refresh",
+        "topic": "",
         "topicType": "str",
-        "x": 120,
-        "y": 300,
+        "x": 1640,
+        "y": 760,
         "wires": [
             [
-                "d1c8d8b2db639d2a"
+                "d1c8d8b2db639d2a",
+                "573f3c554e60fbb4"
             ]
         ]
     },
@@ -406,7 +752,7 @@
         "id": "acc2ae42e4f94f66",
         "type": "ui_dropdown",
         "z": "e5dcf3c3680b7f84",
-        "name": "File Selector",
+        "name": "File Selector Delete",
         "label": "",
         "tooltip": "",
         "place": "Select a file",
@@ -415,6 +761,7 @@
         "width": "5",
         "height": "1",
         "passthru": false,
+        "multiple": false,
         "options": [
             {
                 "label": "",
@@ -424,8 +771,10 @@
         ],
         "payload": "",
         "topic": "",
-        "x": 970,
-        "y": 240,
+        "topicType": "str",
+        "className": "",
+        "x": 1010,
+        "y": 500,
         "wires": [
             [
                 "4c1ea62efb00b6cc"
@@ -440,8 +789,11 @@
         "func": "// format the data for the dropdown\nmsg.options = [];\nfor (var i=0; i<msg.payload.length; i++) {\n    // This is a file\n    obj = {};\n    obj [msg.payload[i].name.replace(/^.*(\\\\|\\/|\\:)/, '')]=msg.payload[i].name;\n    msg.options.push(obj);\n}\nmsg.payload={};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 770,
-        "y": 240,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 500,
         "wires": [
             [
                 "acc2ae42e4f94f66"
@@ -461,8 +813,8 @@
         "storeOutMessages": true,
         "fwdInMessages": true,
         "templateScope": "local",
-        "x": 1160,
-        "y": 300,
+        "x": 1180,
+        "y": 560,
         "wires": [
             []
         ]
@@ -478,8 +830,8 @@
         "syntax": "mustache",
         "template": "<table width=\"100%\">\n    <tr><th>File Name</th><th>Size</th><th>Created</th><th>Changed</th></tr>\n    {{#payload}}\n        <tr>\n            <td><a href=\"/endpoint/download?filename={{name}}\" target=\"blank\">{{fname}}</a></td>\n            <td>{{stat.size}}</td>\n            <td>{{stat.created}}</td>\n            <td>{{stat.changed}}</td>\n        </tr>\n    {{/payload}}\n</table>\n",
         "output": "str",
-        "x": 1000,
-        "y": 300,
+        "x": 1020,
+        "y": 560,
         "wires": [
             [
                 "d1fa4ed4ad2d38ac"
@@ -494,8 +846,8 @@
         "func": "for (var i=0; i<msg.payload.length; i++) {\n    msg.payload[i].stat.created = msg.payload[i].stat.created.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].stat.changed = msg.payload[i].stat.changed.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].stat.accessed = msg.payload[i].stat.accessed.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].stat.statusChanged = msg.payload[i].stat.statusChanged.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].fname = msg.payload[i].name.replace(/^.*(\\\\|\\/|\\:)/, '');\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 800,
-        "y": 300,
+        "x": 820,
+        "y": 560,
         "wires": [
             [
                 "0c5c57b1088a9de1"
@@ -522,8 +874,8 @@
         "payloadType": "str",
         "topic": "",
         "topicType": "str",
-        "x": 90,
-        "y": 460,
+        "x": 150,
+        "y": 700,
         "wires": [
             [
                 "944230bff8ae2868"
@@ -538,8 +890,8 @@
         "func": "// Get the filename from the flow context\nlet filename = flow.get(\"fileselected\");\n\n// check, if the filename is undefined that means it does not exist yet, nothing is selected yet\n// return: do not output anything\nif (filename===undefined) {\n    return;\n}\n\n// return the filename to the file-in node to delete\nmsg.filename = filename;\n\nif (msg.filename.replace(/^.*(\\\\|\\/|\\:)/, '')[0]!==\".\") {\n    // Only do this if this is a file, we don't delete folders\n    // and delete the context/selection as we are deleting the file as well\n    flow.set(\"fileselected\");\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 750,
-        "y": 460,
+        "x": 810,
+        "y": 700,
         "wires": [
             [
                 "08b57eade9f3a2fa"
@@ -556,8 +908,8 @@
         "createDir": false,
         "overwriteFile": "delete",
         "encoding": "none",
-        "x": 920,
-        "y": 460,
+        "x": 980,
+        "y": 700,
         "wires": [
             [
                 "e2088c759a463a75"
@@ -573,8 +925,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 150,
-        "y": 540,
+        "x": 210,
+        "y": 860,
         "wires": [
             [
                 "cb6cc3e02a4433b6"
@@ -588,8 +940,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 990,
-        "y": 540,
+        "x": 1050,
+        "y": 860,
         "wires": []
     },
     {
@@ -600,8 +952,8 @@
         "func": "msg.filename = msg.req.query.filename;\nmsg.contentdisposition = \"attachment; filename=\\\"\" + msg.req.query.filename.replace(/^.*(\\\\|\\/|\\:)/, '') + \"\\\"\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 450,
-        "y": 540,
+        "x": 510,
+        "y": 860,
         "wires": [
             [
                 "a0bb26ac851323e5"
@@ -622,8 +974,8 @@
         "chunk": false,
         "sendError": false,
         "encoding": "none",
-        "x": 640,
-        "y": 540,
+        "x": 700,
+        "y": 860,
         "wires": [
             [
                 "186ca9adf98be1ee"
@@ -663,8 +1015,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 810,
-        "y": 540,
+        "x": 870,
+        "y": 860,
         "wires": [
             [
                 "8cc2ef1c3391a76d"
@@ -685,8 +1037,8 @@
         "raw": false,
         "topic": "",
         "name": "Confirmation",
-        "x": 430,
-        "y": 460,
+        "x": 490,
+        "y": 700,
         "wires": [
             [
                 "4c70a9bfc54f80c2"
@@ -719,8 +1071,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 250,
-        "y": 460,
+        "x": 310,
+        "y": 700,
         "wires": [
             [
                 "b492eb9f611eeb8d"
@@ -744,8 +1096,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 590,
-        "y": 460,
+        "x": 650,
+        "y": 700,
         "wires": [
             [
                 "daa1deb8db403f0b"
@@ -757,11 +1109,14 @@
         "type": "function",
         "z": "e5dcf3c3680b7f84",
         "name": "Folder handling",
-        "func": "let folder = context.get(\"folder\");\nif (folder===undefined) {\n    folder=\"/\";\n    context.set(\"folder\", folder);\n}\n\nlet hidden = context.get(\"hidden\");\nif (hidden===undefined) {\n    hidden=false;\n    context.set(\"hidden\", hidden);\n}\n\nif (msg.topic===\"up\") {\n    var the_arr = folder.split('/');\n    the_arr.pop();\n    folder=the_arr.join('/'); \n    context.set(\"folder\", folder);\n}\nif (msg.topic===\"change\") {\n    folder=msg.payload;    \n    context.set(\"folder\", folder);\n}\nif (msg.topic===\"hidden\") {\n    hidden=msg.payload;    \n    context.set(\"hidden\", hidden);\n}\n\nmsg.payload = {\"start\":folder, \"hidden\": hidden};\nreturn msg;",
+        "func": "let folder = context.get(\"folder\");\nif (folder===undefined) {\n    folder=\"/share/Node Red FarmOS\";\n    context.set(\"folder\", folder);\n}\n\n\nmsg.payload = {\"start\":folder};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
         "x": 360,
-        "y": 240,
+        "y": 560,
         "wires": [
             [
                 "a5c6a2689830f5a7",
@@ -781,8 +1136,8 @@
         "label": "Folder:",
         "format": "{{msg.payload.start}}",
         "layout": "row-left",
-        "x": 570,
-        "y": 300,
+        "x": 590,
+        "y": 560,
         "wires": []
     },
     {
@@ -804,8 +1159,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1180,
-        "y": 240,
+        "x": 1260,
+        "y": 500,
         "wires": [
             []
         ]
@@ -827,11 +1182,663 @@
                 "type": "str"
             }
         ],
-        "x": 90,
-        "y": 400,
+        "x": 1290,
+        "y": 800,
         "wires": [
             [
                 "e2088c759a463a75"
+            ]
+        ]
+    },
+    {
+        "id": "79f6c5a353cb3aef",
+        "type": "file",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Export CSV file",
+        "filename": "/share/Node Red FarmOS/Herd Export.csv",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1460,
+        "y": 1100,
+        "wires": [
+            [
+                "e2088c759a463a75"
+            ]
+        ]
+    },
+    {
+        "id": "f14d58aa9952ef30",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Parse Asset",
+        "func": "let outputMsgs = [];\nvar tag,dob,breed,gender,csv,code;\noutputMsgs.push({payload:csv});\nmsg.payload[1].data.forEach(data => {\n    if (data.attributes.archived == null) {\n    tag = data.attributes.id_tag[0].id;\n    gender = data.attributes.sex;\n    dob = data.attributes.birthdate;\n    //Start Date formatting\n    const date = new Date(dob);\n    const newDateString = date.getDate() + \"/\" + (date.getMonth()+1) + \"/\" + date.getFullYear();\n    //End Date formatting\n    breed = data.relationships.animal_type.data.id;\n    msg.payload[0].data.forEach(dat => {\n    if (dat.id == breed) {\n        code = dat.attributes.name;\n        }\n    })\n    \n    csv = tag +\",\"+gender+ \",\" + newDateString + \",\" + code ;   \n        outputMsgs.push({payload:csv});\n    \n    }\n    })\n\nreturn [ outputMsgs ];",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1270,
+        "y": 1100,
+        "wires": [
+            [
+                "79f6c5a353cb3aef"
+            ]
+        ]
+    },
+    {
+        "id": "af2fb28da1ded449",
+        "type": "subflow:e4dbd4aa15ac01e7",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "x": 890,
+        "y": 1100,
+        "wires": [
+            [
+                "0d9dfa0d2511c9be"
+            ]
+        ]
+    },
+    {
+        "id": "af52c3f7785bbd99",
+        "type": "file",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Blank File with Headings",
+        "filename": "/share/Node Red FarmOS/Herd Export.csv",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 630,
+        "y": 1100,
+        "wires": [
+            [
+                "af2fb28da1ded449",
+                "1b216ba30928ead6"
+            ]
+        ]
+    },
+    {
+        "id": "b5f0fab209322c18",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "CSV Headings",
+        "func": "msg.payload = \"Tag Number,Gender,Date of Birth,Breed\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1100,
+        "wires": [
+            [
+                "af52c3f7785bbd99"
+            ]
+        ]
+    },
+    {
+        "id": "1b216ba30928ead6",
+        "type": "subflow:0b62d3613b5f679a",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "x": 900,
+        "y": 1040,
+        "wires": [
+            [
+                "0d9dfa0d2511c9be"
+            ]
+        ]
+    },
+    {
+        "id": "0d9dfa0d2511c9be",
+        "type": "join",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "2",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1110,
+        "y": 1100,
+        "wires": [
+            [
+                "f14d58aa9952ef30"
+            ]
+        ]
+    },
+    {
+        "id": "77d67ea1a45ed84d",
+        "type": "comment",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Herd Profile CSV Exporter",
+        "info": "",
+        "x": 190,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "66356f4f1602f3bb",
+        "type": "ui_button",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "group": "15a038adbb04e2b7",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "Export Herd Profile",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "filename",
+        "topicType": "msg",
+        "x": 190,
+        "y": 1100,
+        "wires": [
+            [
+                "b5f0fab209322c18"
+            ]
+        ]
+    },
+    {
+        "id": "80e154f10c6c2697",
+        "type": "ui_dropdown",
+        "z": "e5dcf3c3680b7f84",
+        "name": "File Selector Upload HP",
+        "label": "",
+        "tooltip": "",
+        "place": "Select a file",
+        "group": "480f0760021e99ed",
+        "order": 1,
+        "width": "5",
+        "height": "1",
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 1030,
+        "y": 420,
+        "wires": [
+            [
+                "d160daa054d4bb30"
+            ]
+        ]
+    },
+    {
+        "id": "659be91b464e2793",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Format data",
+        "func": "// format the data for the dropdown\nmsg.options = [];\nfor (var i=0; i<msg.payload.length; i++) {\n    // This is a file\n    obj = {};\n    obj [msg.payload[i].name.replace(/^.*(\\\\|\\/|\\:)/, '')]=msg.payload[i].name;\n    msg.options.push(obj);\n}\nmsg.payload={};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 420,
+        "wires": [
+            [
+                "80e154f10c6c2697"
+            ]
+        ]
+    },
+    {
+        "id": "d160daa054d4bb30",
+        "type": "change",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Save selection",
+        "rules": [
+            {
+                "t": "set",
+                "p": "uploadhp",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1260,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ef94cbcc4e3efd08",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Import to farmOS",
+        "func": "//Declare Variables\nlet outputMsgs = [];\nvar tag,gender,dob,breed;\nvar asset,UUID;\n\n//Start loop to Read CSV one line at a time\nmsg.payload[1].forEach(data => {\n\n//extract data from CSV\ntag = data[\"Tag Number\"];\ngender = data.Gender\ndob = data[\"Date of Birth\"]\nbreed = data.Breed;\n\n//loop to find breed UUID\nmsg.payload[0].data.forEach(data2 => {\n    if (data2.attributes.name == breed) {\n        UUID = data2.id;\n        }   \n    })\n// End loop to find breed UUID\n\n//Start Date formatting\nfunction padZero(i) {\n    return i < 10 ? \"0\"+i : i;\n}\nconst dateString = dob;\nconst parts = dateString.split(\"/\");\nconst date = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));\nconst newDateString = date.getFullYear()+'-' + (padZero(date.getMonth()+1)) + '-'+padZero(date.getDate());\n//End Date formatting\n\n//Create Asset Object \nasset = {\n  \"data\": {\n    \"type\": \"asset--animal\",\n    \"attributes\": {\n      \"name\": tag.slice(-3), //name is last 3 digits of tag number \n      \"id_tag\": [ \n\t\t{\n\t\t\"id\": tag,\n\t\t\"type\": \"ear_tag\",\n\t\t\"location\": \"\"\n\t\t}\n\t],\n        \"birthdate\": newDateString + \"T00:00:00+00:00\", //Formatted Date @ midnight\n        \"sex\": gender.charAt(0), //reduce Male/Female to M/F\n        \n        \n    },\n   \"relationships\": {\n\t\t\"animal_type\": {\n\t\t\t\"data\": {\n\t\t\t    \"type\": \"taxonomy_term--animal_type\",\n\t\t\t\t\"id\": UUID,\n}\n  }\n}\n}\n      \n}\noutputMsgs.push({payload:asset}); //push Assets to next node one at a time\n    }) //End Loop Read CSV\n\n\nreturn [ outputMsgs ];\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1330,
+        "y": 1520,
+        "wires": [
+            [
+                "20ed865854b3f268"
+            ]
+        ]
+    },
+    {
+        "id": "d4483339fff733d7",
+        "type": "join",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "2",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1010,
+        "y": 1520,
+        "wires": [
+            [
+                "ef94cbcc4e3efd08"
+            ]
+        ]
+    },
+    {
+        "id": "e32f97a34bb6f04d",
+        "type": "subflow:0b62d3613b5f679a",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "x": 480,
+        "y": 1520,
+        "wires": [
+            [
+                "d4483339fff733d7"
+            ]
+        ]
+    },
+    {
+        "id": "20ed865854b3f268",
+        "type": "subflow:ef61916a42ae78a5",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "x": 1690,
+        "y": 1520,
+        "wires": [
+            [
+                "e2088c759a463a75"
+            ]
+        ]
+    },
+    {
+        "id": "f1c4b5086c4f305b",
+        "type": "subflow:206496a20cb8cbbd",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "x": 980,
+        "y": 1320,
+        "wires": [
+            [
+                "28fbed0d7e05023f"
+            ]
+        ]
+    },
+    {
+        "id": "7d644dc81b0c9557",
+        "type": "comment",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Herd Profile CSV Importer",
+        "info": "",
+        "x": 210,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "3a5d6f3c57bdbb87",
+        "type": "ui_button",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "group": "480f0760021e99ed",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Import Herd Profile",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "filename",
+        "topicType": "msg",
+        "x": 170,
+        "y": 1520,
+        "wires": [
+            [
+                "e32f97a34bb6f04d",
+                "b82702232c7443f7"
+            ]
+        ]
+    },
+    {
+        "id": "51f7c7db87436e85",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Get filename",
+        "func": "// Get the filename from the flow context\nlet filename = flow.get(\"uploadhp\");\n\n// check, if the filename is undefined that means it does not exist yet, nothing is selected yet\n// return: do not output anything\nif (filename===undefined) {\n    return;\n}\n\n// return the filename to the file-in node to delete\nmsg.filename = filename;\nmsg.topic = \"first\";\n\nflow.set(\"uploadhp\");\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 1320,
+        "wires": [
+            [
+                "f1c4b5086c4f305b"
+            ]
+        ]
+    },
+    {
+        "id": "babd3c2490f418e2",
+        "type": "ui_toast",
+        "z": "e5dcf3c3680b7f84",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": false,
+        "outputs": 1,
+        "ok": "Yes",
+        "cancel": "No",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Confirmation",
+        "x": 470,
+        "y": 1440,
+        "wires": [
+            [
+                "0965c40a4092a7e3"
+            ]
+        ]
+    },
+    {
+        "id": "b82702232c7443f7",
+        "type": "change",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Set message",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Upload confirmation",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Are you sure you want to Upload this file?",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 290,
+        "y": 1440,
+        "wires": [
+            [
+                "babd3c2490f418e2"
+            ]
+        ]
+    },
+    {
+        "id": "0965c40a4092a7e3",
+        "type": "switch",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Yes",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 630,
+        "y": 1440,
+        "wires": [
+            [
+                "38ecd65e5451cd3d"
+            ]
+        ]
+    },
+    {
+        "id": "28c8ced5d81440a4",
+        "type": "subflow:206496a20cb8cbbd",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "x": 460,
+        "y": 1320,
+        "wires": [
+            [
+                "9194c0e192fef282"
+            ]
+        ]
+    },
+    {
+        "id": "38ecd65e5451cd3d",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Export.CSV",
+        "func": "// Get the filename from the flow context\nlet filename = \"/share/Node Red FarmOS/Herd Export.csv\";\n\n// check, if the filename is undefined that means it does not exist yet, nothing is selected yet\n// return: do not output anything\nif (filename===undefined) {\n    return;\n}\n\n// return the filename to the file-in node to delete\nmsg.filename = filename;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 1320,
+        "wires": [
+            [
+                "28c8ced5d81440a4"
+            ]
+        ]
+    },
+    {
+        "id": "9194c0e192fef282",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "flowset",
+        "func": "var exportcsv = msg.payload;\nflow.set(\"exportcsv\", exportcsv)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 1320,
+        "wires": [
+            [
+                "51f7c7db87436e85"
+            ]
+        ]
+    },
+    {
+        "id": "28fbed0d7e05023f",
+        "type": "function",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "func": "var exportcsv = flow.get(\"exportcsv\");\n\nvar tag;\nvar error =\"Duplicate entries found\" ;\nexportcsv.forEach(tag1 => {\n   \n       tag = tag1['Tag Number'];\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    if (msg.payload[i]['Tag Number'] == tag) {\n        msg.payload = error;\n        return msg;\n    \n}   \n  }\n    \n})\n\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 1320,
+        "wires": [
+            [
+                "8518250f0a93ffac"
+            ]
+        ]
+    },
+    {
+        "id": "8518250f0a93ffac",
+        "type": "switch",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "string",
+                "vt": "string"
+            },
+            {
+                "t": "istype",
+                "v": "array",
+                "vt": "array"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1310,
+        "y": 1320,
+        "wires": [
+            [
+                "e6d989aac9c7284d"
+            ],
+            [
+                "d4483339fff733d7"
+            ]
+        ]
+    },
+    {
+        "id": "cd8515e395881ea8",
+        "type": "catch",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "scope": [
+            "ef94cbcc4e3efd08"
+        ],
+        "uncaught": false,
+        "x": 1330,
+        "y": 1460,
+        "wires": [
+            [
+                "20ed865854b3f268"
+            ]
+        ]
+    },
+    {
+        "id": "e6d989aac9c7284d",
+        "type": "ui_text",
+        "z": "e5dcf3c3680b7f84",
+        "group": "160e81fb.f1c86e",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1990,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "36f0b72d83a16ab2",
+        "type": "comment",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Download",
+        "info": "",
+        "x": 160,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "56713b7fecb3abc0",
+        "type": "comment",
+        "z": "e5dcf3c3680b7f84",
+        "name": "Delete",
+        "info": "",
+        "x": 150,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "573f3c554e60fbb4",
+        "type": "delay",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1880,
+        "y": 760,
+        "wires": [
+            [
+                "e6d989aac9c7284d"
             ]
         ]
     },
@@ -843,6 +1850,28 @@
         "order": 1,
         "disp": true,
         "width": "18",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "15a038adbb04e2b7",
+        "type": "ui_group",
+        "name": "farmOS Export",
+        "tab": "b63d1f91.68095",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "480f0760021e99ed",
+        "type": "ui_group",
+        "name": "farmOS Import",
+        "tab": "b63d1f91.68095",
+        "order": 3,
+        "disp": true,
+        "width": "6",
         "collapse": false,
         "className": ""
     }
