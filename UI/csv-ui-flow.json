@@ -690,8 +690,8 @@
         "z": "e5dcf3c3680b7f84",
         "name": "File Browser",
         "info": "",
-        "x": 190,
-        "y": 400,
+        "x": 890,
+        "y": 240,
         "wires": []
     },
     {
@@ -709,8 +709,8 @@
         "depth": 0,
         "stat": true,
         "showWarnings": false,
-        "x": 590,
-        "y": 500,
+        "x": 1170,
+        "y": 340,
         "wires": [
             [
                 "34d43731c093fbb2",
@@ -739,8 +739,8 @@
         "payloadType": "str",
         "topic": "",
         "topicType": "str",
-        "x": 1640,
-        "y": 760,
+        "x": 1520,
+        "y": 700,
         "wires": [
             [
                 "d1c8d8b2db639d2a",
@@ -773,8 +773,8 @@
         "topic": "",
         "topicType": "str",
         "className": "",
-        "x": 1010,
-        "y": 500,
+        "x": 1590,
+        "y": 340,
         "wires": [
             [
                 "4c1ea62efb00b6cc"
@@ -792,8 +792,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 790,
-        "y": 500,
+        "x": 1370,
+        "y": 340,
         "wires": [
             [
                 "acc2ae42e4f94f66"
@@ -813,8 +813,8 @@
         "storeOutMessages": true,
         "fwdInMessages": true,
         "templateScope": "local",
-        "x": 1180,
-        "y": 560,
+        "x": 1760,
+        "y": 400,
         "wires": [
             []
         ]
@@ -830,8 +830,8 @@
         "syntax": "mustache",
         "template": "<table width=\"100%\">\n    <tr><th>File Name</th><th>Size</th><th>Created</th><th>Changed</th></tr>\n    {{#payload}}\n        <tr>\n            <td><a href=\"/endpoint/download?filename={{name}}\" target=\"blank\">{{fname}}</a></td>\n            <td>{{stat.size}}</td>\n            <td>{{stat.created}}</td>\n            <td>{{stat.changed}}</td>\n        </tr>\n    {{/payload}}\n</table>\n",
         "output": "str",
-        "x": 1020,
-        "y": 560,
+        "x": 1600,
+        "y": 400,
         "wires": [
             [
                 "d1fa4ed4ad2d38ac"
@@ -846,8 +846,8 @@
         "func": "for (var i=0; i<msg.payload.length; i++) {\n    msg.payload[i].stat.created = msg.payload[i].stat.created.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].stat.changed = msg.payload[i].stat.changed.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].stat.accessed = msg.payload[i].stat.accessed.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].stat.statusChanged = msg.payload[i].stat.statusChanged.toISOString().slice(0, 19).replace('T', ' ');\n    msg.payload[i].fname = msg.payload[i].name.replace(/^.*(\\\\|\\/|\\:)/, '');\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 820,
-        "y": 560,
+        "x": 1400,
+        "y": 400,
         "wires": [
             [
                 "0c5c57b1088a9de1"
@@ -1115,8 +1115,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 560,
+        "x": 940,
+        "y": 400,
         "wires": [
             [
                 "a5c6a2689830f5a7",
@@ -1136,8 +1136,8 @@
         "label": "Folder:",
         "format": "{{msg.payload.start}}",
         "layout": "row-left",
-        "x": 590,
-        "y": 560,
+        "x": 1170,
+        "y": 400,
         "wires": []
     },
     {
@@ -1159,8 +1159,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1260,
-        "y": 500,
+        "x": 1840,
+        "y": 340,
         "wires": [
             []
         ]
@@ -1182,8 +1182,8 @@
                 "type": "str"
             }
         ],
-        "x": 1290,
-        "y": 800,
+        "x": 1250,
+        "y": 860,
         "wires": [
             [
                 "e2088c759a463a75"
@@ -1382,8 +1382,8 @@
         "topic": "",
         "topicType": "str",
         "className": "",
-        "x": 1030,
-        "y": 420,
+        "x": 1610,
+        "y": 260,
         "wires": [
             [
                 "d160daa054d4bb30"
@@ -1401,8 +1401,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 790,
-        "y": 420,
+        "x": 1370,
+        "y": 260,
         "wires": [
             [
                 "80e154f10c6c2697"
@@ -1428,8 +1428,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1260,
-        "y": 420,
+        "x": 1840,
+        "y": 260,
         "wires": [
             []
         ]
@@ -1449,7 +1449,8 @@
         "y": 1520,
         "wires": [
             [
-                "20ed865854b3f268"
+                "20ed865854b3f268",
+                "a79b4c966b9ca20c"
             ]
         ]
     },
@@ -1618,7 +1619,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Are you sure you want to Upload this file?",
+                "to": "Have you exported the current herd profile before importing this file?",
                 "tot": "str"
             }
         ],
@@ -1715,14 +1716,14 @@
         "id": "28fbed0d7e05023f",
         "type": "function",
         "z": "e5dcf3c3680b7f84",
-        "name": "",
-        "func": "var exportcsv = flow.get(\"exportcsv\");\n\nvar tag;\nvar error =\"Duplicate entries found\" ;\nexportcsv.forEach(tag1 => {\n   \n       tag = tag1['Tag Number'];\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    if (msg.payload[i]['Tag Number'] == tag) {\n        msg.payload = error;\n        return msg;\n    \n}   \n  }\n    \n})\n\n\nreturn msg;\n\n\n",
+        "name": "Compare CSV",
+        "func": "var exportcsv = flow.get(\"exportcsv\");\n//var output = msg.payload;\nvar tag;\nvar error =\"Import Failed: Duplicate entries found\" ;\nexportcsv.forEach(tag1 => {\n   \n       tag = tag1['Tag Number'];\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    if (msg.payload[i]['Tag Number'] == tag) {\n        msg.payload = error;\n        return msg;\n    \n}   \n  }\n    \n})\n\n//msg.payload = output;\nreturn msg;\n\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1160,
+        "x": 1180,
         "y": 1320,
         "wires": [
             [
@@ -1752,7 +1753,7 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 1310,
+        "x": 1350,
         "y": 1320,
         "wires": [
             [
@@ -1793,7 +1794,7 @@
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 1990,
+        "x": 1970,
         "y": 1320,
         "wires": []
     },
@@ -1801,9 +1802,9 @@
         "id": "36f0b72d83a16ab2",
         "type": "comment",
         "z": "e5dcf3c3680b7f84",
-        "name": "Download",
+        "name": "Upload/Download",
         "info": "",
-        "x": 160,
+        "x": 190,
         "y": 800,
         "wires": []
     },
@@ -1834,13 +1835,30 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1880,
-        "y": 760,
+        "x": 1860,
+        "y": 1120,
         "wires": [
             [
                 "e6d989aac9c7284d"
             ]
         ]
+    },
+    {
+        "id": "a79b4c966b9ca20c",
+        "type": "debug",
+        "z": "e5dcf3c3680b7f84",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1590,
+        "y": 1400,
+        "wires": []
     },
     {
         "id": "160e81fb.f1c86e",
